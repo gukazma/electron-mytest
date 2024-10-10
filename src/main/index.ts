@@ -52,13 +52,18 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => {
     console.log('pong')
-    dialog.showOpenDialog({ properties: [ 'openFile', 'openDirectory', 'multiSelections' ]})
   })
   ipcMain.on('asynchronous-message', (event, arg) => {
     console.log(arg) // 在 Node 控制台中打印“ping”
     // 作用如同 `send`，但返回一个消息
     // 到发送原始消息的渲染器
-    event.reply('asynchronous-reply', 'asdasd!!!!')
+    dialog.showOpenDialog({ properties: ['openFile'] }).then(result => {
+      console.log(result.canceled)
+      console.log(result.filePaths)
+      event.reply('asynchronous-reply', result.filePaths[0])
+    }).catch(err => {
+      console.log(err)
+    })
   })
   createWindow()
 

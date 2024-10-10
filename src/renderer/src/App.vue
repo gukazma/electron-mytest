@@ -18,17 +18,28 @@ import type { VcReadyObject } from 'vue-cesium/es/utils/types'
     console.log(readyObj.viewer) // instanceof Cesium.Viewer
     window.electron.ipcRenderer.send('ping')
     
-    window.electron.ipcRenderer.send('asynchronous-message', 'sdasdasd')
+    // window.electron.ipcRenderer.send('asynchronous-message', 'sdasdasd')
     window.electron.ipcRenderer.on('asynchronous-reply', (_event, arg) => {
       console.log(arg) // 在 DevTools 控制台中打印“pong”
       console.log("123123!!!")
+      readyObj.Cesium.Cesium3DTileset.fromUrl(arg).then(result => {
+      console.log(result)
+      readyObj.viewer.scene.primitives.add(result)
+      readyObj.viewer.zoomTo(result, new readyObj.Cesium.HeadingPitchRange(0.0, -1.0, 50))
+    }).catch(err => {
+      console.log(err)
     })
-    // var tileset = readyObj.Cesium.Cesium3DTileset.fromUrl("D:/codes/electron-dev/cesium-viewer/src/renderer/public/Cesium-1.115/Apps/SampleData/Cesium3DTiles/Tilesets/Tileset/tileset.json");
-    // readyObj.viewer.scene.primitives.add(tileset);
-    // readyObj.viewer.zoomTo(tileset, new readyObj.Cesium.HeadingPitchRange(0.0, -1.0, 5))
+      
+    })
+  }
+  const onButtonClick = () => {
+    window.electron.ipcRenderer.send('asynchronous-message', 'sdasdasd')
   }
 </script>
 
 <template>
   <vc-viewer ref="viewerRef" @ready="onViewerReady"> </vc-viewer>
+  <button type="button" @click="onButtonClick()">
+    Open
+  </button>
 </template>
