@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { IpcRenderer } from 'electron';
+import { onMounted } from 'vue'
 import { VcViewer } from 'vue-cesium'
 import type { VcReadyObject } from 'vue-cesium/es/utils/types'
 
-  const viewerRef = ref<HTMLElement>(null)
+  // const viewerRef = ref<HTMLElement>(null)
 
   onMounted(() => {
-    viewerRef.value.creatingPromise.then((readyObj: VcReadyObject) => {
-      console.log(readyObj.Cesium) // Cesium namespace object
-      console.log(readyObj.viewer) // instanceof Cesium.Viewer
-    })
+    // viewerRef.value.creatingPromise.then((readyObj: VcReadyObject) => {
+    //   console.log(readyObj.Cesium) // Cesium namespace object
+    //   console.log(readyObj.viewer) // instanceof Cesium.Viewer
+    // })
   })
 
   const onViewerReady = (readyObj: VcReadyObject) => {
@@ -47,8 +46,16 @@ import type { VcReadyObject } from 'vue-cesium/es/utils/types'
 </script>
 
 <template>
-  <vc-viewer ref="viewerRef" @ready="onViewerReady"> </vc-viewer>
-  <button type="button" @click="onButtonClick()">
-    Open
-  </button>
+   <div class="home viewer">
+    <vc-viewer ref="viewerRef" @ready="onViewerReady" :style="{ width: '100%', height: '100vh'}">
+      <!-- <vc-layer-imagery>
+        <vc-imagery-provider-osm></vc-imagery-provider-osm>
+      </vc-layer-imagery> -->
+      <vc-navigation></vc-navigation>
+      <vc-measurements ></vc-measurements>
+    </vc-viewer>
+    <button type="button" @click="onButtonClick()" style="position: absolute; top: 50px; left: 50px; width: 100px; height: 100px; background: lightgreen; z-index: 1;">
+      Open
+    </button>
+  </div>
 </template>

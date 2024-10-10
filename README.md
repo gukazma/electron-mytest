@@ -1,4 +1,4 @@
-# electron-mytest
+# pnts-viewer
 
 An Electron application with Vue and TypeScript
 
