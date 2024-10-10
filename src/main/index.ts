@@ -54,7 +54,12 @@ app.whenReady().then(() => {
     console.log('pong')
     dialog.showOpenDialog({ properties: [ 'openFile', 'openDirectory', 'multiSelections' ]})
   })
-
+  ipcMain.on('asynchronous-message', (event, arg) => {
+    console.log(arg) // 在 Node 控制台中打印“ping”
+    // 作用如同 `send`，但返回一个消息
+    // 到发送原始消息的渲染器
+    event.reply('asynchronous-reply', 'asdasd!!!!')
+  })
   createWindow()
 
   app.on('activate', function () {
