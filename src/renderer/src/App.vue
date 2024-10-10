@@ -54,8 +54,17 @@ import type { VcReadyObject } from 'vue-cesium/es/utils/types'
       <vc-navigation></vc-navigation>
       <vc-measurements ></vc-measurements>
     </vc-viewer>
-    <button type="button" @click="onButtonClick()" style="position: absolute; top: 50px; left: 50px; width: 100px; height: 100px; background: lightgreen; z-index: 1;">
-      Open
+    <button type="button" @click="onButtonClick()" style="position: absolute; top: 50px; left: 50px; width: 100px; height: 50px; font-size: 16px;
+    color: #fff;
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 255, 0.5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s; z-index: 1;">
+      导入模型
     </button>
   </div>
 </template>
