@@ -48,9 +48,9 @@ import type { VcReadyObject } from 'vue-cesium/es/utils/types'
 <template>
    <div class="home viewer">
     <vc-viewer ref="viewerRef" @ready="onViewerReady" :style="{ width: '100%', height: '100vh'}">
-      <!-- <vc-layer-imagery>
-        <vc-imagery-provider-osm></vc-imagery-provider-osm>
-      </vc-layer-imagery> -->
+      <vc-layer-imagery>
+      <vc-imagery-provider-arcgis></vc-imagery-provider-arcgis>
+    </vc-layer-imagery>
       <vc-navigation></vc-navigation>
       <vc-measurements ></vc-measurements>
     </vc-viewer>
