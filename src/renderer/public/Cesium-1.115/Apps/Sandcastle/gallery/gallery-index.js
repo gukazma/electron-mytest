@@ -1,6 +1,6 @@
 // This file is automatically rebuilt by the Cesium build process.
-const hello_world_index = 114;
-const VERSION = '1.115';
+const hello_world_index = 125;
+const VERSION = '1.125';
 const gallery_demos = [{
   "name": "3D Models",
   "isNew": false,
@@ -58,6 +58,10 @@ const gallery_demos = [{
   "isNew": false,
   "img": "3D Tiles Formats.jpg"
 }, {
+  "name": "3D Tiles Gaussian Splatting",
+  "isNew": true,
+  "img": "3D Tiles Gaussian Splatting.jpg"
+}, {
   "name": "3D Tiles Inspector",
   "isNew": false,
   "img": "3D Tiles Inspector.jpg"
@@ -69,6 +73,10 @@ const gallery_demos = [{
   "name": "3D Tiles Interior",
   "isNew": false,
   "img": "3D Tiles Interior.jpg"
+}, {
+  "name": "3D Tiles NGA GPM Visualization",
+  "isNew": false,
+  "img": "3D Tiles NGA GPM Visualization.jpg"
 }, {
   "name": "3D Tiles Photogrammetry",
   "isNew": false,
@@ -101,6 +109,22 @@ const gallery_demos = [{
   "name": "3D Tiles Vertical Exaggeration",
   "isNew": false,
   "img": "3D Tiles Vertical Exaggeration.jpg"
+}, {
+  "name": "AEC Architectural Design",
+  "isNew": false,
+  "img": "AEC Architectural Design.jpg"
+}, {
+  "name": "AEC Clipping",
+  "isNew": false,
+  "img": "AEC Clipping.jpg"
+}, {
+  "name": "AEC Isolate by Category",
+  "isNew": false,
+  "img": "AEC Isolate by Category.jpg"
+}, {
+  "name": "AEC Metadata Styling",
+  "isNew": false,
+  "img": "AEC Metadata Styling.jpg"
 }, {
   "name": "Aerometrex San Francisco",
   "isNew": false,
@@ -258,6 +282,10 @@ const gallery_demos = [{
   "isNew": false,
   "img": "CZML ZIndex.jpg"
 }, {
+  "name": "Callback Position Property",
+  "isNew": false,
+  "img": "Callback Position Property.jpg"
+}, {
   "name": "Callback Property",
   "isNew": false,
   "img": "Callback Property.jpg"
@@ -317,6 +345,10 @@ const gallery_demos = [{
   "name": "Classification Types",
   "isNew": false,
   "img": "Classification Types.jpg"
+}, {
+  "name": "Clipping Regions",
+  "isNew": false,
+  "img": "Clipping Regions.jpg"
 }, {
   "name": "Clock",
   "isNew": false,
@@ -394,6 +426,10 @@ const gallery_demos = [{
   "isNew": false,
   "img": "Elevation Band Material.jpg"
 }, {
+  "name": "Entity tracking",
+  "isNew": false,
+  "img": "Entity tracking.jpg"
+}, {
   "name": "Export KML",
   "isNew": false,
   "img": "Export KML.jpg"
@@ -401,6 +437,10 @@ const gallery_demos = [{
   "name": "FXAA",
   "isNew": false,
   "img": "FXAA.jpg"
+}, {
+  "name": "Fog",
+  "isNew": false,
+  "img": "Fog.jpg"
 }, {
   "name": "Fog Post Process",
   "isNew": false,
@@ -433,6 +473,10 @@ const gallery_demos = [{
   "name": "Globe Materials",
   "isNew": false,
   "img": "Globe Materials.jpg"
+}, {
+  "name": "Globe Materials – Water Mask Elevation Map",
+  "isNew": false,
+  "img": "Globe Materials – Water Mask Elevation Map.jpg"
 }, {
   "name": "Globe Translucency",
   "isNew": false,
@@ -471,7 +515,7 @@ const gallery_demos = [{
   "img": "I3S 3D Object Layer.jpg"
 }, {
   "name": "I3S Building Scene Layer",
-  "isNew": true,
+  "isNew": false,
   "img": "I3S Building Scene Layer.jpg"
 }, {
   "name": "I3S Feature Picking",
@@ -518,6 +562,10 @@ const gallery_demos = [{
   "isNew": false,
   "img": "Interpolation.jpg"
 }, {
+  "name": "Japan Buildings",
+  "isNew": false,
+  "img": "Japan Buildings.jpg"
+}, {
   "name": "KML",
   "isNew": false,
   "img": "KML.jpg"
@@ -561,6 +609,10 @@ const gallery_demos = [{
   "name": "Montreal Point Cloud",
   "isNew": false,
   "img": "Montreal Point Cloud.jpg"
+}, {
+  "name": "Moon",
+  "isNew": false,
+  "img": "Moon.jpg"
 }, {
   "name": "Multi-part CZML",
   "isNew": false,
@@ -694,6 +746,10 @@ const gallery_demos = [{
   "isNew": false,
   "img": "Spheres and Ellipsoids.jpg"
 }, {
+  "name": "SplitDirection",
+  "isNew": false,
+  "img": "SplitDirection.jpg"
+}, {
   "name": "Star Burst",
   "isNew": false,
   "img": "Star Burst.jpg"
@@ -726,6 +782,14 @@ const gallery_demos = [{
   "isNew": false,
   "img": "Video.jpg"
 }, {
+  "name": "Voxel Picking",
+  "isNew": false,
+  "img": "Voxel Picking.jpg"
+}, {
+  "name": "Voxels",
+  "isNew": false,
+  "img": "Voxels.jpg"
+}, {
   "name": "Wall",
   "isNew": false,
   "img": "Wall.jpg"
@@ -745,5 +809,272 @@ const gallery_demos = [{
   "name": "Z-Indexing Geometry",
   "isNew": false,
   "img": "Z-Indexing Geometry.jpg"
+}, {
+  "name": "development/3D Models",
+  "isNew": false,
+  "img": "development/3D Models.jpg"
+}, {
+  "name": "development/3D Models Articulations",
+  "isNew": false,
+  "img": "development/3D Models Articulations.jpg"
+}, {
+  "name": "development/3D Models Node Explorer",
+  "isNew": false,
+  "img": "development/3D Models Node Explorer.jpg"
+}, {
+  "name": "development/3D Tiles Performance Testing",
+  "isNew": false,
+  "img": "development/3D Tiles Performance Testing.jpg"
+}, {
+  "name": "development/3D Tiles Picking",
+  "isNew": false,
+  "img": "development/3D Tiles Picking.jpg"
+}, {
+  "name": "development/3D Tiles Split",
+  "isNew": false,
+  "img": "development/3D Tiles Split.jpg"
+}, {
+  "name": "development/BillboardClampToGround",
+  "isNew": false,
+  "img": "development/BillboardClampToGround.jpg"
+}, {
+  "name": "development/Billboards",
+  "isNew": false,
+  "img": "development/Billboards.jpg"
+}, {
+  "name": "development/Billboards Instancing",
+  "isNew": false,
+  "img": "development/Billboards Instancing.jpg"
+}, {
+  "name": "development/Box",
+  "isNew": false,
+  "img": "development/Box.jpg"
+}, {
+  "name": "development/Box Outline",
+  "isNew": false,
+  "img": "development/Box Outline.jpg"
+}, {
+  "name": "development/Circle",
+  "isNew": false,
+  "img": "development/Circle.jpg"
+}, {
+  "name": "development/Circle Outline",
+  "isNew": false,
+  "img": "development/Circle Outline.jpg"
+}, {
+  "name": "development/Coplanar Polygon",
+  "isNew": false,
+  "img": "development/Coplanar Polygon.jpg"
+}, {
+  "name": "development/Coplanar Polygon Outline",
+  "isNew": false,
+  "img": "development/Coplanar Polygon Outline.jpg"
+}, {
+  "name": "development/Corridor",
+  "isNew": false,
+  "img": "development/Corridor.jpg"
+}, {
+  "name": "development/Corridor Outline",
+  "isNew": false,
+  "img": "development/Corridor Outline.jpg"
+}, {
+  "name": "development/Custom Primitive",
+  "isNew": false,
+  "img": "development/Custom Primitive.jpg"
+}, {
+  "name": "development/Cylinder",
+  "isNew": false,
+  "img": "development/Cylinder.jpg"
+}, {
+  "name": "development/Cylinder Outline",
+  "isNew": false,
+  "img": "development/Cylinder Outline.jpg"
+}, {
+  "name": "development/Display Conditions",
+  "isNew": false,
+  "img": "development/Display Conditions.jpg"
+}, {
+  "name": "development/Ellipse",
+  "isNew": false,
+  "img": "development/Ellipse.jpg"
+}, {
+  "name": "development/Ellipse Outline",
+  "isNew": false,
+  "img": "development/Ellipse Outline.jpg"
+}, {
+  "name": "development/Ellipsoid",
+  "isNew": false,
+  "img": "development/Ellipsoid.jpg"
+}, {
+  "name": "development/Ellipsoid Outline",
+  "isNew": false,
+  "img": "development/Ellipsoid Outline.jpg"
+}, {
+  "name": "development/Ellipsoid Surface",
+  "isNew": false,
+  "img": "development/Ellipsoid Surface.jpg"
+}, {
+  "name": "development/Frustum",
+  "isNew": false,
+  "img": "development/Frustum.jpg"
+}, {
+  "name": "development/Geometry Offset Attribute",
+  "isNew": false,
+  "img": "development/Geometry Offset Attribute.jpg"
+}, {
+  "name": "development/Geometry Offset Attribute box cylinder ellipsoid",
+  "isNew": false,
+  "img": "development/Geometry Offset Attribute box cylinder ellipsoid.jpg"
+}, {
+  "name": "development/Geometry and Appearances",
+  "isNew": false,
+  "img": "development/Geometry and Appearances.jpg"
+}, {
+  "name": "development/Ground Polyline Material",
+  "isNew": false,
+  "img": "development/Ground Polyline Material.jpg"
+}, {
+  "name": "development/Ground Primitive",
+  "isNew": false,
+  "img": "development/Ground Primitive.jpg"
+}, {
+  "name": "development/Ground Primitive Materials",
+  "isNew": false,
+  "img": "development/Ground Primitive Materials.jpg"
+}, {
+  "name": "development/Labels",
+  "isNew": false,
+  "img": "development/Labels.jpg"
+}, {
+  "name": "development/Many Clipping Planes",
+  "isNew": false,
+  "img": "development/Many Clipping Planes.jpg"
+}, {
+  "name": "development/Material",
+  "isNew": false,
+  "img": "development/Material.jpg"
+}, {
+  "name": "development/Multiple Shadows",
+  "isNew": false,
+  "img": "development/Multiple Shadows.jpg"
+}, {
+  "name": "development/PBR Lighting",
+  "isNew": false
+}, {
+  "name": "development/Per Instance Color",
+  "isNew": false,
+  "img": "development/Per Instance Color.jpg"
+}, {
+  "name": "development/Pick From Ray",
+  "isNew": false,
+  "img": "development/Pick From Ray.jpg"
+}, {
+  "name": "development/Picking",
+  "isNew": false,
+  "img": "development/Picking.jpg"
+}, {
+  "name": "development/PointPrimitives",
+  "isNew": false,
+  "img": "development/PointPrimitives.jpg"
+}, {
+  "name": "development/Polygon",
+  "isNew": false,
+  "img": "development/Polygon.jpg"
+}, {
+  "name": "development/Polygon Outline",
+  "isNew": false,
+  "img": "development/Polygon Outline.jpg"
+}, {
+  "name": "development/Polygon Texture Coordinates",
+  "isNew": false,
+  "img": "development/Polygon Texture Coordinates.jpg"
+}, {
+  "name": "development/Polyline",
+  "isNew": false,
+  "img": "development/Polyline.jpg"
+}, {
+  "name": "development/Polyline Color",
+  "isNew": false,
+  "img": "development/Polyline Color.jpg"
+}, {
+  "name": "development/Polyline Material",
+  "isNew": false,
+  "img": "development/Polyline Material.jpg"
+}, {
+  "name": "development/Polyline Volume",
+  "isNew": false,
+  "img": "development/Polyline Volume.jpg"
+}, {
+  "name": "development/Polyline Volume Outline",
+  "isNew": false,
+  "img": "development/Polyline Volume Outline.jpg"
+}, {
+  "name": "development/Polylines",
+  "isNew": false,
+  "img": "development/Polylines.jpg"
+}, {
+  "name": "development/Polylines On Terrain",
+  "isNew": false,
+  "img": "development/Polylines On Terrain.jpg"
+}, {
+  "name": "development/Rectangle",
+  "isNew": false,
+  "img": "development/Rectangle.jpg"
+}, {
+  "name": "development/Rectangle Outline",
+  "isNew": false,
+  "img": "development/Rectangle Outline.jpg"
+}, {
+  "name": "development/Shadows",
+  "isNew": false,
+  "img": "development/Shadows.jpg"
+}, {
+  "name": "development/Simple Polyline",
+  "isNew": false,
+  "img": "development/Simple Polyline.jpg"
+}, {
+  "name": "development/Sphere",
+  "isNew": false,
+  "img": "development/Sphere.jpg"
+}, {
+  "name": "development/Sphere Outline",
+  "isNew": false,
+  "img": "development/Sphere Outline.jpg"
+}, {
+  "name": "development/Terrain Entity Batching",
+  "isNew": false,
+  "img": "development/Terrain Entity Batching.jpg"
+}, {
+  "name": "development/Terrain Performance",
+  "isNew": false,
+  "img": "development/Terrain Performance.jpg"
+}, {
+  "name": "development/Terrain Tweaks",
+  "isNew": false,
+  "img": "development/Terrain Tweaks.jpg"
+}, {
+  "name": "development/Volumes",
+  "isNew": false,
+  "img": "development/Volumes.jpg"
+}, {
+  "name": "development/Wall",
+  "isNew": false,
+  "img": "development/Wall.jpg"
+}, {
+  "name": "development/Wall Outline",
+  "isNew": false,
+  "img": "development/Wall Outline.jpg"
+}, {
+  "name": "glTF PBR Extensions",
+  "isNew": false,
+  "img": "glTF PBR Extensions.jpg"
+}, {
+  "name": "iModel Mesh Export Service",
+  "isNew": false,
+  "img": "iModel Mesh Export Service.jpg"
+}, {
+  "name": "iTwin Feature Service",
+  "isNew": true,
+  "img": "iTwin Feature Service.jpg"
 }];
 const has_new_gallery_demos = true;

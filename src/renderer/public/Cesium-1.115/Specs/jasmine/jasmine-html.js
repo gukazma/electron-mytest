@@ -1,6 +1,6 @@
 /*
 Copyright (c) 2008-2019 Pivotal Labs
-Copyright (c) 2008-2024 The Jasmine developers
+Copyright (c) 2008-2025 The Jasmine developers
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -463,7 +463,11 @@ jasmineRequire.HtmlReporter = function(j$) {
             'tr',
             {},
             createDom('td', {}, entry.timestamp.toString()),
-            createDom('td', {}, entry.message)
+            createDom(
+              'td',
+              { className: 'jasmine-debug-log-msg' },
+              entry.message
+            )
           )
         );
       });

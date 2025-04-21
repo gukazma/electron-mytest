@@ -1,7 +1,7 @@
 /**
  * @license
  * Cesium - https://github.com/CesiumGS/cesium
- * Version 1.115
+ * Version 1.125
  *
  * Copyright 2011-2022 Cesium Contributors
  *
@@ -25,37 +25,33 @@
 
 import {
   PrimitivePipeline_default
-} from "./chunk-Y2ME2IJV.js";
+} from "./chunk-YSDDJID3.js";
 import {
   createTaskProcessorWorker_default
-} from "./chunk-3VAZEH7M.js";
-import "./chunk-2UPKWTMJ.js";
-import "./chunk-EG6PTBY2.js";
-import "./chunk-Z3TIFFGF.js";
-import "./chunk-ZT7KWISZ.js";
-import "./chunk-2FRVPMCS.js";
-import "./chunk-Y5UQJLYE.js";
-import "./chunk-LPR3YNP2.js";
-import "./chunk-4H7PY4U5.js";
-import "./chunk-7TC63SJW.js";
-import "./chunk-FJKNFAKQ.js";
-import "./chunk-TTUZP4BO.js";
-import "./chunk-BG4UCVXN.js";
-import "./chunk-YJEBABKH.js";
-import "./chunk-PPH7OFP3.js";
-import "./chunk-OGXZVPPM.js";
-import "./chunk-5QULIR53.js";
-import "./chunk-SOWMRMWA.js";
-import "./chunk-STW2DGFI.js";
-import "./chunk-BBWDMCVU.js";
-import "./chunk-XGI5BXZY.js";
-import "./chunk-YWTJ2B4B.js";
+} from "./chunk-SDEL6GIF.js";
+import "./chunk-SCTMR5SF.js";
+import "./chunk-D76E6PSV.js";
+import "./chunk-GYLOWMRH.js";
+import "./chunk-XVD2CHMP.js";
+import "./chunk-NMWUSFG6.js";
+import "./chunk-M44PODFC.js";
+import "./chunk-NPIZDB6C.js";
+import "./chunk-KWBBQWF2.js";
+import "./chunk-EOMDP67A.js";
+import "./chunk-2YCNCT5M.js";
+import "./chunk-FUAOSJAR.js";
+import "./chunk-T2ESMZCL.js";
+import "./chunk-GMFVH7MP.js";
+import "./chunk-PHKOGU5O.js";
+import "./chunk-WKBHOKFD.js";
+import "./chunk-BYPRNUCO.js";
+import "./chunk-SGH7UNZN.js";
+import "./chunk-N2TV4RJQ.js";
+import "./chunk-6MI7ARVC.js";
 
 // packages/engine/Source/Workers/combineGeometry.js
 function combineGeometry(packedParameters, transferableObjects) {
-  const parameters = PrimitivePipeline_default.unpackCombineGeometryParameters(
-    packedParameters
-  );
+  const parameters = PrimitivePipeline_default.unpackCombineGeometryParameters(packedParameters);
   const results = PrimitivePipeline_default.combineGeometry(parameters);
   return PrimitivePipeline_default.packCombineGeometryResults(
     results,

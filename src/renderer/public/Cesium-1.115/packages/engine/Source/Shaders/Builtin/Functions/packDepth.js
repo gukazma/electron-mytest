@@ -1,12 +1,12 @@
 //This file is automatically rebuilt by the Cesium build process.
 export default "/**\n\
- * Packs a depth value into a vec3 that can be represented by unsigned bytes.\n\
+ * Packs a depth value into a vec4 that can be represented by unsigned bytes.\n\
  *\n\
  * @name czm_packDepth\n\
  * @glslFunction\n\
  *\n\
  * @param {float} depth The floating-point depth.\n\
- * @returns {vec3} The packed depth.\n\
+ * @returns {vec4} The packed depth.\n\
  */\n\
 vec4 czm_packDepth(float depth)\n\
 {\n\

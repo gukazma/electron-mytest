@@ -3,16 +3,17 @@ export default "uniform float u_maxTotalPointSize;\n\
 \n\
 in vec4 positionHighAndSize;\n\
 in vec4 positionLowAndOutline;\n\
-in vec4 compressedAttribute0;                       // color, outlineColor, pick color\n\
-in vec4 compressedAttribute1;                       // show, translucency by distance, some free space\n\
-in vec4 scaleByDistance;                            // near, nearScale, far, farScale\n\
-in vec3 distanceDisplayConditionAndDisableDepth;    // near, far, disableDepthTestDistance\n\
+in vec4 compressedAttribute0;                                        // color, outlineColor, pick color\n\
+in vec4 compressedAttribute1;                                        // show, translucency by distance, some free space\n\
+in vec4 scaleByDistance;                                             // near, nearScale, far, farScale\n\
+in vec4 distanceDisplayConditionAndDisableDepthAndSplitDirection;    // near, far, disableDepthTestDistance, splitDirection\n\
 \n\
 out vec4 v_color;\n\
 out vec4 v_outlineColor;\n\
 out float v_innerPercent;\n\
 out float v_pixelDistance;\n\
 out vec4 v_pickColor;\n\
+out float v_splitDirection;\n\
 \n\
 const float SHIFT_LEFT8 = 256.0;\n\
 const float SHIFT_RIGHT8 = 1.0 / 256.0;\n\
@@ -136,8 +137,8 @@ void main()\n\
 #endif\n\
 \n\
 #ifdef DISTANCE_DISPLAY_CONDITION\n\
-    float nearSq = distanceDisplayConditionAndDisableDepth.x;\n\
-    float farSq = distanceDisplayConditionAndDisableDepth.y;\n\
+    float nearSq = distanceDisplayConditionAndDisableDepthAndSplitDirection.x;\n\
+    float farSq = distanceDisplayConditionAndDisableDepthAndSplitDirection.y;\n\
     if (lengthSq < nearSq || lengthSq > farSq) {\n\
         // push vertex behind camera to force it to be clipped\n\
         positionEC.xyz = vec3(0.0, 0.0, 1.0);\n\
@@ -148,7 +149,7 @@ void main()\n\
     czm_vertexLogDepth();\n\
 \n\
 #ifdef DISABLE_DEPTH_DISTANCE\n\
-    float disableDepthTestDistance = distanceDisplayConditionAndDisableDepth.z;\n\
+    float disableDepthTestDistance = distanceDisplayConditionAndDisableDepthAndSplitDirection.z;\n\
     if (disableDepthTestDistance == 0.0 && czm_minimumDisableDepthTestDistance != 0.0)\n\
     {\n\
         disableDepthTestDistance = czm_minimumDisableDepthTestDistance;\n\
@@ -181,5 +182,6 @@ void main()\n\
     gl_Position *= show;\n\
 \n\
     v_pickColor = pickColor;\n\
+    v_splitDirection = distanceDisplayConditionAndDisableDepthAndSplitDirection.w;\n\
 }\n\
 ";

@@ -74,14 +74,16 @@ function createTaskProcessorWorker(workerFunction) {
 var createTaskProcessorWorker_default = createTaskProcessorWorker;
 
 // packages/engine/index.js
-globalThis.CESIUM_VERSION = "1.115";
+globalThis.CESIUM_VERSION = "1.125";
 
 // Specs/TestWorkers/transferArrayBuffer.js
-var transferArrayBuffer_default = createTaskProcessorWorker_default(function(parameters, transferableObjects) {
-  const arrayBuffer = new ArrayBuffer(parameters.byteLength);
-  transferableObjects.push(arrayBuffer);
-  return arrayBuffer;
-});
+var transferArrayBuffer_default = createTaskProcessorWorker_default(
+  function(parameters, transferableObjects) {
+    const arrayBuffer = new ArrayBuffer(parameters.byteLength);
+    transferableObjects.push(arrayBuffer);
+    return arrayBuffer;
+  }
+);
 export {
   transferArrayBuffer_default as default
 };

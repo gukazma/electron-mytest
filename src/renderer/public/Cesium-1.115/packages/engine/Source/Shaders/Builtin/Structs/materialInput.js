@@ -11,9 +11,10 @@ export default "/**\n\
  * @property {vec3} normalEC Unperturbed surface normal in eye coordinates.\n\
  * @property {mat3} tangentToEyeMatrix Matrix for converting a tangent space normal to eye space.\n\
  * @property {vec3} positionToEyeEC Vector from the fragment to the eye in eye coordinates.  The magnitude is the distance in meters from the fragment to the eye.\n\
- * @property {float} height The height of the terrain in meters above or below the WGS84 ellipsoid.  Only available for globe materials.\n\
+ * @property {float} height The height of the terrain in meters above or below the ellipsoid.  Only available for globe materials.\n\
  * @property {float} slope The slope of the terrain in radians.  0 is flat; pi/2 is vertical.  Only available for globe materials.\n\
  * @property {float} aspect The aspect of the terrain in radians.  0 is East, pi/2 is North, pi is West, 3pi/2 is South.  Only available for globe materials.\n\
+* @property {float} waterMask The value of the water mask. 0 is land, 1 is water. Only available for globe materials.\n\
  */\n\
 struct czm_materialInput\n\
 {\n\
@@ -26,5 +27,6 @@ struct czm_materialInput\n\
     float height;\n\
     float slope;\n\
     float aspect;\n\
+    float waterMask;\n\
 };\n\
 ";

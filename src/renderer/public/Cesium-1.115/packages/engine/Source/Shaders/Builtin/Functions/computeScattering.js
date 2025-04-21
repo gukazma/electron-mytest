@@ -41,7 +41,6 @@ void czm_computeScattering(\n\
 \n\
     // Return empty colors if no intersection with the atmosphere geometry.\n\
     if (primaryRayAtmosphereIntersect == czm_emptyRaySegment) {\n\
-        rayleighColor = vec3(1.0, 0.0, 1.0);\n\
         return;\n\
     }\n\
 \n\

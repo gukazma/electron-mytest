@@ -72,7 +72,7 @@ vec4 czm_screenToEyeCoordinates(vec2 screenCoordinateXY, float depthOrLogDepth)\
     float near = czm_currentFrustum.x;\n\
     float far = czm_currentFrustum.y;\n\
     float log2Depth = depthOrLogDepth * czm_log2FarDepthFromNearPlusOne;\n\
-    float depthFromNear = pow(2.0, log2Depth) - 1.0;\n\
+    float depthFromNear = exp2(log2Depth) - 1.0;\n\
     float depthFromCamera = depthFromNear + near;\n\
     vec4 screenCoord = vec4(screenCoordinateXY, far * (1.0 - near / depthFromCamera) / (far - near), 1.0);\n\
     vec4 eyeCoordinate = czm_screenToEyeCoordinates(screenCoord);\n\

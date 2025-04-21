@@ -43,4 +43,5 @@ float pointCloudBackFaceCullingStage() {\n\
   return 1.0;\n\
   #endif\n\
 }\n\
-#endif";
+#endif\n\
+";

@@ -5,6 +5,8 @@ in vec2 v_textureCoordinates;\n\
 \n\
 #ifdef AUTO_EXPOSURE\n\
 uniform sampler2D autoExposure;\n\
+#else\n\
+uniform float exposure;\n\
 #endif\n\
 \n\
 void main()\n\
@@ -14,6 +16,8 @@ void main()\n\
 \n\
 #ifdef AUTO_EXPOSURE\n\
     color /= texture(autoExposure, vec2(0.5)).r;\n\
+#else\n\
+    color *= vec3(exposure);\n\
 #endif\n\
     color = czm_acesTonemapping(color);\n\
     color = czm_inverseGamma(color);\n\

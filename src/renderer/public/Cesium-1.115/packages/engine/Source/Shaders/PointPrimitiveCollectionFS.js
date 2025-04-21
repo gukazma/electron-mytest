@@ -4,9 +4,13 @@ in vec4 v_outlineColor;\n\
 in float v_innerPercent;\n\
 in float v_pixelDistance;\n\
 in vec4 v_pickColor;\n\
+in float v_splitDirection;\n\
 \n\
 void main()\n\
 {\n\
+    if (v_splitDirection < 0.0 && gl_FragCoord.x > czm_splitPosition) discard;\n\
+    if (v_splitDirection > 0.0 && gl_FragCoord.x < czm_splitPosition) discard;\n\
+\n\
     // The distance in UV space from this fragment to the center of the point, at most 0.5.\n\
     float distanceToCenter = length(gl_PointCoord - vec2(0.5));\n\
     // The max distance stops one pixel shy of the edge to leave space for anti-aliasing.\n\

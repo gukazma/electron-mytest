@@ -47,6 +47,12 @@ out vec3 v_atmosphereMieColor;\n\
 out float v_atmosphereOpacity;\n\
 #endif\n\
 \n\
+#ifdef ENABLE_CLIPPING_POLYGONS\n\
+uniform highp sampler2D u_clippingExtents;\n\
+out vec2 v_clippingPosition;\n\
+flat out int v_regionIndex;\n\
+#endif\n\
+\n\
 // These functions are generated at runtime.\n\
 vec4 getPosition(vec3 position, float height, vec2 textureCoordinates);\n\
 float get2DYPositionFraction(vec2 textureCoordinates);\n\
@@ -206,6 +212,32 @@ void main()\n\
 \n\
     v_normalMC = normalMC;\n\
     v_normalEC = czm_normal3D * v_normalMC;\n\
+#endif\n\
+\n\
+#ifdef ENABLE_CLIPPING_POLYGONS\n\
+    vec2 sphericalLatLong = czm_approximateSphericalCoordinates(position3DWC);\n\
+    sphericalLatLong.y = czm_branchFreeTernary(sphericalLatLong.y < czm_pi, sphericalLatLong.y, sphericalLatLong.y - czm_twoPi);\n\
+    \n\
+    vec2 minDistance = vec2(czm_infinity);\n\
+    v_clippingPosition = vec2(czm_infinity);\n\
+    v_regionIndex = -1;\n\
+\n\
+    for (int regionIndex = 0; regionIndex < CLIPPING_POLYGON_REGIONS_LENGTH; regionIndex++) {\n\
+        vec4 extents = unpackClippingExtents(u_clippingExtents, regionIndex);\n\
+        vec2 rectUv = (sphericalLatLong.yx - extents.yx) * extents.wz;\n\
+\n\
+        vec2 clamped = clamp(rectUv, vec2(0.0), vec2(1.0));\n\
+        vec2 distance = abs(rectUv - clamped) * extents.wz;\n\
+\n\
+        float threshold = 0.01;\n\
+        if (minDistance.x > distance.x || minDistance.y > distance.y) {\n\
+            minDistance = distance;\n\
+            v_clippingPosition = rectUv;\n\
+            if (rectUv.x > threshold && rectUv.y > threshold && rectUv.x < 1.0 - threshold && rectUv.y < 1.0 - threshold) {\n\
+                v_regionIndex = regionIndex;\n\
+            }\n\
+        }\n\
+    }\n\
 #endif\n\
 \n\
 #if defined(FOG) || (defined(GROUND_ATMOSPHERE) && !defined(PER_FRAGMENT_GROUND_ATMOSPHERE))\n\

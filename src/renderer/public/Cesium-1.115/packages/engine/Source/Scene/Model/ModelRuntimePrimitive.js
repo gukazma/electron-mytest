@@ -14,6 +14,7 @@ import FeatureIdPipelineStage from "./FeatureIdPipelineStage.js";
 import GeometryPipelineStage from "./GeometryPipelineStage.js";
 import LightingPipelineStage from "./LightingPipelineStage.js";
 import MaterialPipelineStage from "./MaterialPipelineStage.js";
+import MetadataPickingPipelineStage from "./MetadataPickingPipelineStage.js";
 import MetadataPipelineStage from "./MetadataPipelineStage.js";
 import ModelUtility from "./ModelUtility.js";
 import MorphTargetsPipelineStage from "./MorphTargetsPipelineStage.js";
@@ -26,6 +27,8 @@ import SelectedFeatureIdPipelineStage from "./SelectedFeatureIdPipelineStage.js"
 import SkinningPipelineStage from "./SkinningPipelineStage.js";
 import VerticalExaggerationPipelineStage from "./VerticalExaggerationPipelineStage.js";
 import WireframePipelineStage from "./WireframePipelineStage.js";
+import GaussianSplatPipelineStage from "./GaussianSplatPipelineStage.js";
+import GaussianSplatTexturePipelineStage from "./GaussianSplatTexturePipelineStage.js";
 
 /**
  * In memory representation of a single primitive, that is, a primitive
@@ -199,7 +202,8 @@ ModelRuntimePrimitive.prototype.configurePipeline = function (frameState) {
   const mode = frameState.mode;
   const use2D =
     mode !== SceneMode.SCENE3D && !frameState.scene3DOnly && model._projectTo2D;
-  const exaggerateTerrain = frameState.verticalExaggeration !== 1.0;
+  const hasVerticalExaggeration =
+    frameState.verticalExaggeration !== 1.0 && model.hasVerticalExaggeration;
 
   const hasMorphTargets =
     defined(primitive.morphTargets) && primitive.morphTargets.length > 0;
@@ -211,8 +215,9 @@ ModelRuntimePrimitive.prototype.configurePipeline = function (frameState) {
     !hasCustomFragmentShader ||
     customShader.mode !== CustomShaderMode.REPLACE_MATERIAL;
   const hasQuantization = ModelUtility.hasQuantizedAttributes(
-    primitive.attributes
+    primitive.attributes,
   );
+
   const generateWireframeIndices =
     model.debugWireframe &&
     PrimitiveType.isTriangles(primitive.primitiveType) &&
@@ -237,6 +242,9 @@ ModelRuntimePrimitive.prototype.configurePipeline = function (frameState) {
 
   const hasClassification = defined(model.classificationType);
 
+  const hasGaussianSplats =
+    (model?.style?.showGaussianSplatting ?? model.showGaussianSplatting) &&
+    (primitive?.isGaussianSplatPrimitive ?? false);
   // Start of pipeline -----------------------------------------------------
   if (use2D) {
     pipelineStages.push(SceneMode2DPipelineStage);
@@ -276,6 +284,7 @@ ModelRuntimePrimitive.prototype.configurePipeline = function (frameState) {
   // are declared to avoid compilation errors.
   pipelineStages.push(FeatureIdPipelineStage);
   pipelineStages.push(MetadataPipelineStage);
+  pipelineStages.push(MetadataPickingPipelineStage);
 
   if (featureIdFlags.hasPropertyTable) {
     pipelineStages.push(SelectedFeatureIdPipelineStage);
@@ -283,7 +292,7 @@ ModelRuntimePrimitive.prototype.configurePipeline = function (frameState) {
     pipelineStages.push(CPUStylingPipelineStage);
   }
 
-  if (exaggerateTerrain) {
+  if (hasVerticalExaggeration) {
     pipelineStages.push(VerticalExaggerationPipelineStage);
   }
 
@@ -305,6 +314,17 @@ ModelRuntimePrimitive.prototype.configurePipeline = function (frameState) {
 
   pipelineStages.push(PrimitiveStatisticsPipelineStage);
 
+  if (hasGaussianSplats) {
+    if (!defined(primitive.needsGaussianSplatTexture)) {
+      pipelineStages.push(GaussianSplatPipelineStage);
+    } else if (
+      primitive.needsGaussianSplatTexture === false &&
+      (primitive?.hasGaussianSplatTexture ?? false)
+    ) {
+      pipelineStages.push(GaussianSplatTexturePipelineStage);
+    }
+  }
+
   return;
 };
 
@@ -315,7 +335,7 @@ function inspectFeatureIds(model, node, primitive) {
   if (defined(node.instances)) {
     featureIds = ModelUtility.getFeatureIdsByLabel(
       node.instances.featureIds,
-      model.instanceFeatureIdLabel
+      model.instanceFeatureIdLabel,
     );
 
     if (defined(featureIds)) {
@@ -328,7 +348,7 @@ function inspectFeatureIds(model, node, primitive) {
 
   featureIds = ModelUtility.getFeatureIdsByLabel(
     primitive.featureIds,
-    model.featureIdLabel
+    model.featureIdLabel,
   );
   if (defined(featureIds)) {
     return {

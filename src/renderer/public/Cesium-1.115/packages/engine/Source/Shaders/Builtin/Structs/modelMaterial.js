@@ -11,6 +11,7 @@ export default "/**\n\
  * @name czm_modelMaterial\n\
  * @glslStruct\n\
  *\n\
+ * @property {vec4} baseColor The base color of the material.\n\
  * @property {vec3} diffuse Incoming light that scatters evenly in all directions.\n\
  * @property {float} alpha Alpha of this material. 0.0 is completely transparent; 1.0 is completely opaque.\n\
  * @property {vec3} specular Color of reflected light at normal incidence in PBR materials. This is sometimes referred to as f0 in the literature.\n\
@@ -20,6 +21,7 @@ export default "/**\n\
  * @property {vec3} emissive Light emitted by the material equally in all directions. The default is vec3(0.0), which emits no light.\n\
  */\n\
 struct czm_modelMaterial {\n\
+    vec4 baseColor;\n\
     vec3 diffuse;\n\
     float alpha;\n\
     vec3 specular;\n\
@@ -27,5 +29,19 @@ struct czm_modelMaterial {\n\
     vec3 normalEC;\n\
     float occlusion;\n\
     vec3 emissive;\n\
+#ifdef USE_SPECULAR\n\
+    float specularWeight;\n\
+#endif\n\
+#ifdef USE_ANISOTROPY\n\
+    vec3 anisotropicT;\n\
+    vec3 anisotropicB;\n\
+    float anisotropyStrength;\n\
+#endif\n\
+#ifdef USE_CLEARCOAT\n\
+    float clearcoatFactor;\n\
+    float clearcoatRoughness;\n\
+    vec3 clearcoatNormal;\n\
+    // Add clearcoatF0 when KHR_materials_ior is implemented\n\
+#endif\n\
 };\n\
 ";

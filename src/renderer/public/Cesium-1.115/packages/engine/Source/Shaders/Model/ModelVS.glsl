@@ -111,6 +111,10 @@ void main()
     atmosphereStage(attributes);
     #endif
 
+    #ifdef ENABLE_CLIPPING_POLYGONS
+    modelClippingPolygonsStage(attributes);
+    #endif
+
     #ifdef HAS_SILHOUETTE
     silhouetteStage(attributes, positionClip);
     #endif
@@ -137,9 +141,21 @@ void main()
         #else
         gl_PointSize = 1.0;
         #endif
-
+        
         gl_PointSize *= show;
     #endif
 
-    gl_Position = show * positionClip;
+    #ifdef HAS_GAUSSIAN_SPLATS
+    gaussianSplatStage(attributes, positionClip);
+    #endif
+
+    // Important NOT to compute gl_Position = show * positionClip or we hit:
+    // https://github.com/CesiumGS/cesium/issues/11270
+    //
+    // We will discard points with v_pointCloudShow == 0 in the fragment shader.
+    gl_Position = positionClip;
+
+    #ifdef HAS_POINT_CLOUD_SHOW_STYLE
+    v_pointCloudShow = show;
+    #endif
 }

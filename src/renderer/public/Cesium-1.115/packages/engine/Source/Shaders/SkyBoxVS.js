@@ -1,6 +1,5 @@
 //This file is automatically rebuilt by the Cesium build process.
 export default "in vec3 position;\n\
-\n\
 out vec3 v_texCoord;\n\
 \n\
 void main()\n\

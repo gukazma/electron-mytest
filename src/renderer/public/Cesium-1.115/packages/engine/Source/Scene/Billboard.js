@@ -21,6 +21,37 @@ import HorizontalOrigin from "./HorizontalOrigin.js";
 import SceneMode from "./SceneMode.js";
 import SceneTransforms from "./SceneTransforms.js";
 import VerticalOrigin from "./VerticalOrigin.js";
+import SplitDirection from "./SplitDirection.js";
+
+/**
+ * @typedef {object} Billboard.ConstructorOptions
+ *
+ * Initialization options for the first param of Billboard constructor
+ *
+ * @property {Cartesian3} position The cartesian position of the billboard.
+ * @property {*} [id] A user-defined object to return when the billboard is picked with {@link Scene#pick}.
+ * @property {boolean} [show=true] Determines if this billboard will be shown.
+ * @property {string | HTMLCanvasElement} [image] A loaded HTMLImageElement, ImageData, or a url to an image to use for the billboard.
+ * @property {number} [scale=1.0] A number specifying the uniform scale that is multiplied with the billboard's image size in pixels.
+ * @property {Cartesian2} [pixelOffset=Cartesian2.ZERO] A {@link Cartesian2} Specifying the pixel offset in screen space from the origin of this billboard.
+ * @property {Cartesian3} [eyeOffset=Cartesian3.ZERO] A {@link Cartesian3} Specifying the 3D Cartesian offset applied to this billboard in eye coordinates.
+ * @property {HorizontalOrigin} [horizontalOrigin=HorizontalOrigin.CENTER] A {@link HorizontalOrigin} Specifying the horizontal origin of this billboard.
+ * @property {VerticalOrigin} [verticalOrigin=VerticalOrigin.CENTER] A {@link VerticalOrigin} Specifying the vertical origin of this billboard.
+ * @property {HeightReference} [heightReference=HeightReference.NONE] A {@link HeightReference} Specifying the height reference of this billboard.
+ * @property {Color} [color=Color.WHITE] A {@link Color} Specifying the color that is multiplied with the billboard's texture.
+ * @property {number} [rotation=0] A number specifying the rotation angle in radians.
+ * @property {Cartesian3} [alignedAxis=Cartesian3.ZERO] A {@link Cartesian3} Specifying the aligned axis in world space.
+ * @property {boolean} [sizeInMeters] A boolean specifying if the billboard size is in meters or pixels.
+ * @property {number} [width] A number specifying the width of the billboard. If undefined, the image width will be used.
+ * @property {number} [height] A number specifying the height of the billboard. If undefined, the image height will be used.
+ * @property {NearFarScalar} [scaleByDistance] A {@link NearFarScalar} Specifying near and far scaling properties of a Billboard based on the billboard's distance from the camera.
+ * @property {NearFarScalar} [translucencyByDistance] A {@link NearFarScalar} Specifying near and far translucency properties of a Billboard based on the billboard's distance from the camera.
+ * @property {NearFarScalar} [pixelOffsetScaleByDistance] A {@link NearFarScalar} Specifying near and far pixel offset scaling properties of a Billboard based on the billboard's distance from the camera.
+ * @property {BoundingRectangle} [imageSubRegion] A {@link BoundingRectangle} Specifying the sub-region of the image to use for the billboard, rather than the entire image.
+ * @property {DistanceDisplayCondition} [distanceDisplayCondition] A {@link DistanceDisplayCondition} Specifying the distance from the camera at which this billboard will be displayed.
+ * @property {number} [disableDepthTestDistance] A number specifying the distance from the camera at which to disable the depth test to, for example, prevent clipping against terrain.
+ * @property {SplitDirection} [splitDirection] A {@link SplitDirection} Specifying the split property of the billboard.
+ */
 
 /**
  * <div class="notice">
@@ -56,6 +87,9 @@ import VerticalOrigin from "./VerticalOrigin.js";
  * @internalConstructor
  * @class
  *
+ * @param {Billboard.ConstructorOptions} options Object describing initialization options
+ * @param {BillboardCollection} billboardCollection Instance of BillboardCollection
+ *
  * @demo {@link https://sandcastle.cesium.com/index.html?src=Billboards.html|Cesium Sandcastle Billboard Demo}
  */
 function Billboard(options, billboardCollection) {
@@ -67,7 +101,7 @@ function Billboard(options, billboardCollection) {
     options.disableDepthTestDistance < 0.0
   ) {
     throw new DeveloperError(
-      "disableDepthTestDistance must be greater than or equal to 0.0."
+      "disableDepthTestDistance must be greater than or equal to 0.0.",
     );
   }
   //>>includeEnd('debug');
@@ -80,7 +114,7 @@ function Billboard(options, billboardCollection) {
     //>>includeStart('debug', pragmas.debug);
     if (translucencyByDistance.far <= translucencyByDistance.near) {
       throw new DeveloperError(
-        "translucencyByDistance.far must be greater than translucencyByDistance.near."
+        "translucencyByDistance.far must be greater than translucencyByDistance.near.",
       );
     }
     //>>includeEnd('debug');
@@ -90,19 +124,19 @@ function Billboard(options, billboardCollection) {
     //>>includeStart('debug', pragmas.debug);
     if (pixelOffsetScaleByDistance.far <= pixelOffsetScaleByDistance.near) {
       throw new DeveloperError(
-        "pixelOffsetScaleByDistance.far must be greater than pixelOffsetScaleByDistance.near."
+        "pixelOffsetScaleByDistance.far must be greater than pixelOffsetScaleByDistance.near.",
       );
     }
     //>>includeEnd('debug');
     pixelOffsetScaleByDistance = NearFarScalar.clone(
-      pixelOffsetScaleByDistance
+      pixelOffsetScaleByDistance,
     );
   }
   if (defined(scaleByDistance)) {
     //>>includeStart('debug', pragmas.debug);
     if (scaleByDistance.far <= scaleByDistance.near) {
       throw new DeveloperError(
-        "scaleByDistance.far must be greater than scaleByDistance.near."
+        "scaleByDistance.far must be greater than scaleByDistance.near.",
       );
     }
     //>>includeEnd('debug');
@@ -112,44 +146,44 @@ function Billboard(options, billboardCollection) {
     //>>includeStart('debug', pragmas.debug);
     if (distanceDisplayCondition.far <= distanceDisplayCondition.near) {
       throw new DeveloperError(
-        "distanceDisplayCondition.far must be greater than distanceDisplayCondition.near."
+        "distanceDisplayCondition.far must be greater than distanceDisplayCondition.near.",
       );
     }
     //>>includeEnd('debug');
     distanceDisplayCondition = DistanceDisplayCondition.clone(
-      distanceDisplayCondition
+      distanceDisplayCondition,
     );
   }
 
   this._show = defaultValue(options.show, true);
   this._position = Cartesian3.clone(
-    defaultValue(options.position, Cartesian3.ZERO)
+    defaultValue(options.position, Cartesian3.ZERO),
   );
   this._actualPosition = Cartesian3.clone(this._position); // For columbus view and 2D
   this._pixelOffset = Cartesian2.clone(
-    defaultValue(options.pixelOffset, Cartesian2.ZERO)
+    defaultValue(options.pixelOffset, Cartesian2.ZERO),
   );
   this._translate = new Cartesian2(0.0, 0.0); // used by labels for glyph vertex translation
   this._eyeOffset = Cartesian3.clone(
-    defaultValue(options.eyeOffset, Cartesian3.ZERO)
+    defaultValue(options.eyeOffset, Cartesian3.ZERO),
   );
   this._heightReference = defaultValue(
     options.heightReference,
-    HeightReference.NONE
+    HeightReference.NONE,
   );
   this._verticalOrigin = defaultValue(
     options.verticalOrigin,
-    VerticalOrigin.CENTER
+    VerticalOrigin.CENTER,
   );
   this._horizontalOrigin = defaultValue(
     options.horizontalOrigin,
-    HorizontalOrigin.CENTER
+    HorizontalOrigin.CENTER,
   );
   this._scale = defaultValue(options.scale, 1.0);
   this._color = Color.clone(defaultValue(options.color, Color.WHITE));
   this._rotation = defaultValue(options.rotation, 0.0);
   this._alignedAxis = Cartesian3.clone(
-    defaultValue(options.alignedAxis, Cartesian3.ZERO)
+    defaultValue(options.alignedAxis, Cartesian3.ZERO),
   );
   this._width = options.width;
   this._height = options.height;
@@ -213,11 +247,16 @@ function Billboard(options, billboardCollection) {
 
   this._clusterShow = true;
   this._outlineColor = Color.clone(
-    defaultValue(options.outlineColor, Color.BLACK)
+    defaultValue(options.outlineColor, Color.BLACK),
   );
   this._outlineWidth = defaultValue(options.outlineWidth, 0.0);
 
   this._updateClamping();
+
+  this._splitDirection = defaultValue(
+    options.splitDirection,
+    SplitDirection.NONE,
+  );
 }
 
 const SHOW_INDEX = (Billboard.SHOW_INDEX = 0);
@@ -232,13 +271,16 @@ const COLOR_INDEX = (Billboard.COLOR_INDEX = 8);
 const ROTATION_INDEX = (Billboard.ROTATION_INDEX = 9);
 const ALIGNED_AXIS_INDEX = (Billboard.ALIGNED_AXIS_INDEX = 10);
 const SCALE_BY_DISTANCE_INDEX = (Billboard.SCALE_BY_DISTANCE_INDEX = 11);
-const TRANSLUCENCY_BY_DISTANCE_INDEX = (Billboard.TRANSLUCENCY_BY_DISTANCE_INDEX = 12);
-const PIXEL_OFFSET_SCALE_BY_DISTANCE_INDEX = (Billboard.PIXEL_OFFSET_SCALE_BY_DISTANCE_INDEX = 13);
+const TRANSLUCENCY_BY_DISTANCE_INDEX =
+  (Billboard.TRANSLUCENCY_BY_DISTANCE_INDEX = 12);
+const PIXEL_OFFSET_SCALE_BY_DISTANCE_INDEX =
+  (Billboard.PIXEL_OFFSET_SCALE_BY_DISTANCE_INDEX = 13);
 const DISTANCE_DISPLAY_CONDITION = (Billboard.DISTANCE_DISPLAY_CONDITION = 14);
 const DISABLE_DEPTH_DISTANCE = (Billboard.DISABLE_DEPTH_DISTANCE = 15);
 Billboard.TEXTURE_COORDINATE_BOUNDS = 16;
 const SDF_INDEX = (Billboard.SDF_INDEX = 17);
-Billboard.NUMBER_OF_PROPERTIES = 18;
+const SPLIT_DIRECTION_INDEX = (Billboard.SPLIT_DIRECTION_INDEX = 18);
+Billboard.NUMBER_OF_PROPERTIES = 19;
 
 function makeDirty(billboard, propertyChanged) {
   const billboardCollection = billboard._billboardCollection;
@@ -385,7 +427,7 @@ Object.defineProperties(Billboard.prototype, {
         Check.typeOf.object("value", value);
         if (value.far <= value.near) {
           throw new DeveloperError(
-            "far distance must be greater than near distance."
+            "far distance must be greater than near distance.",
           );
         }
       }
@@ -431,7 +473,7 @@ Object.defineProperties(Billboard.prototype, {
         Check.typeOf.object("value", value);
         if (value.far <= value.near) {
           throw new DeveloperError(
-            "far distance must be greater than near distance."
+            "far distance must be greater than near distance.",
           );
         }
       }
@@ -441,7 +483,7 @@ Object.defineProperties(Billboard.prototype, {
       if (!NearFarScalar.equals(translucencyByDistance, value)) {
         this._translucencyByDistance = NearFarScalar.clone(
           value,
-          translucencyByDistance
+          translucencyByDistance,
         );
         makeDirty(this, TRANSLUCENCY_BY_DISTANCE_INDEX);
       }
@@ -481,7 +523,7 @@ Object.defineProperties(Billboard.prototype, {
         Check.typeOf.object("value", value);
         if (value.far <= value.near) {
           throw new DeveloperError(
-            "far distance must be greater than near distance."
+            "far distance must be greater than near distance.",
           );
         }
       }
@@ -491,7 +533,7 @@ Object.defineProperties(Billboard.prototype, {
       if (!NearFarScalar.equals(pixelOffsetScaleByDistance, value)) {
         this._pixelOffsetScaleByDistance = NearFarScalar.clone(
           value,
-          pixelOffsetScaleByDistance
+          pixelOffsetScaleByDistance,
         );
         makeDirty(this, PIXEL_OFFSET_SCALE_BY_DISTANCE_INDEX);
       }
@@ -815,14 +857,14 @@ Object.defineProperties(Billboard.prototype, {
           Check.typeOf.object("value", value);
           if (value.far <= value.near) {
             throw new DeveloperError(
-              "far distance must be greater than near distance."
+              "far distance must be greater than near distance.",
             );
           }
         }
         //>>includeEnd('debug');
         this._distanceDisplayCondition = DistanceDisplayCondition.clone(
           value,
-          this._distanceDisplayCondition
+          this._distanceDisplayCondition,
         );
         makeDirty(this, DISTANCE_DISPLAY_CONDITION);
       }
@@ -845,7 +887,7 @@ Object.defineProperties(Billboard.prototype, {
         Check.typeOf.number("value", value);
         if (value < 0.0) {
           throw new DeveloperError(
-            "disableDepthTestDistance must be greater than or equal to 0.0."
+            "disableDepthTestDistance must be greater than or equal to 0.0.",
           );
         }
       }
@@ -860,7 +902,7 @@ Object.defineProperties(Billboard.prototype, {
   /**
    * Gets or sets the user-defined object returned when the billboard is picked.
    * @memberof Billboard.prototype
-   * @type {object}
+   * @type {*}
    */
   id: {
     get: function () {
@@ -974,7 +1016,7 @@ Object.defineProperties(Billboard.prototype, {
     set: function (value) {
       this._actualClampedPosition = Cartesian3.clone(
         value,
-        this._actualClampedPosition
+        this._actualClampedPosition,
       );
       makeDirty(this, POSITION_INDEX);
     },
@@ -1040,6 +1082,24 @@ Object.defineProperties(Billboard.prototype, {
       }
     },
   },
+
+  /**
+   * Gets or sets the {@link SplitDirection} of this billboard.
+   * @memberof Billboard.prototype
+   * @type {SplitDirection}
+   * @default {@link SplitDirection.NONE}
+   */
+  splitDirection: {
+    get: function () {
+      return this._splitDirection;
+    },
+    set: function (value) {
+      if (this._splitDirection !== value) {
+        this._splitDirection = value;
+        makeDirty(this, SPLIT_DIRECTION_INDEX);
+      }
+    },
+  },
 });
 
 Billboard.prototype.getPickId = function (context) {
@@ -1065,15 +1125,14 @@ Billboard._updateClamping = function (collection, owner) {
     //>>includeStart('debug', pragmas.debug);
     if (owner._heightReference !== HeightReference.NONE) {
       throw new DeveloperError(
-        "Height reference is not supported without a scene."
+        "Height reference is not supported without a scene.",
       );
     }
     //>>includeEnd('debug');
     return;
   }
 
-  const globe = scene.globe;
-  const ellipsoid = defaultValue(globe?.ellipsoid, Ellipsoid.WGS84);
+  const ellipsoid = defaultValue(scene.ellipsoid, Ellipsoid.default);
 
   const mode = scene.frameState.mode;
 
@@ -1107,9 +1166,9 @@ Billboard._updateClamping = function (collection, owner) {
   }
 
   function updateFunction(clampedPosition) {
-    owner._clampedPosition = ellipsoid.cartographicToCartesian(
+    const updatedClampedPosition = ellipsoid.cartographicToCartesian(
       clampedPosition,
-      owner._clampedPosition
+      owner._clampedPosition,
     );
 
     if (isHeightReferenceRelative(owner._heightReference)) {
@@ -1117,18 +1176,20 @@ Billboard._updateClamping = function (collection, owner) {
         clampedPosition.height += position.height;
         ellipsoid.cartographicToCartesian(
           clampedPosition,
-          owner._clampedPosition
+          updatedClampedPosition,
         );
       } else {
-        owner._clampedPosition.x += position.height;
+        updatedClampedPosition.x += position.height;
       }
     }
+
+    owner._clampedPosition = updatedClampedPosition;
   }
 
   owner._removeCallbackFunc = scene.updateHeight(
     position,
     updateFunction,
-    owner._heightReference
+    owner._heightReference,
   );
 
   Cartographic.clone(position, scratchCartographic);
@@ -1329,7 +1390,7 @@ Billboard._computeActualPosition = function (
   billboard,
   position,
   frameState,
-  modelMatrix
+  modelMatrix,
 ) {
   if (defined(billboard._clampedPosition)) {
     if (frameState.mode !== billboard._mode) {
@@ -1341,7 +1402,10 @@ Billboard._computeActualPosition = function (
   }
 
   Matrix4.multiplyByPoint(modelMatrix, position, tempCartesian3);
-  return SceneTransforms.computeActualWgs84Position(frameState, tempCartesian3);
+  return SceneTransforms.computeActualEllipsoidPosition(
+    frameState,
+    tempCartesian3,
+  );
 };
 
 const scratchCartesian3 = new Cartesian3();
@@ -1353,21 +1417,21 @@ Billboard._computeScreenSpacePosition = function (
   eyeOffset,
   pixelOffset,
   scene,
-  result
+  result,
 ) {
   // Model to world coordinates
   const positionWorld = Matrix4.multiplyByPoint(
     modelMatrix,
     position,
-    scratchCartesian3
+    scratchCartesian3,
   );
 
   // World to window coordinates
-  const positionWC = SceneTransforms.wgs84WithEyeOffsetToWindowCoordinates(
+  const positionWC = SceneTransforms.worldWithEyeOffsetToWindowCoordinates(
     scene,
     positionWorld,
     eyeOffset,
-    result
+    result,
   );
   if (!defined(positionWC)) {
     return undefined;
@@ -1407,7 +1471,7 @@ Billboard.prototype.computeScreenSpacePosition = function (scene, result) {
   //>>includeStart('debug', pragmas.debug);
   if (!defined(billboardCollection)) {
     throw new DeveloperError(
-      "Billboard must be in a collection.  Was it removed?"
+      "Billboard must be in a collection.  Was it removed?",
     );
   }
   if (!defined(scene)) {
@@ -1439,7 +1503,7 @@ Billboard.prototype.computeScreenSpacePosition = function (scene, result) {
     this._eyeOffset,
     scratchPixelOffset,
     scene,
-    result
+    result,
   );
   return windowCoordinates;
 };
@@ -1456,7 +1520,7 @@ Billboard.prototype.computeScreenSpacePosition = function (scene, result) {
 Billboard.getScreenSpaceBoundingBox = function (
   billboard,
   screenSpacePosition,
-  result
+  result,
 ) {
   let width = billboard.width;
   let height = billboard.height;
@@ -1498,7 +1562,7 @@ Billboard.getScreenSpaceBoundingBox = function (
  * Determines if this billboard equals another billboard.  Billboards are equal if all their properties
  * are equal.  Billboards in different collections can be equal.
  *
- * @param {Billboard} other The billboard to compare for equality.
+ * @param {Billboard} [other] The billboard to compare for equality.
  * @returns {boolean} <code>true</code> if the billboards are equal; otherwise, <code>false</code>.
  */
 Billboard.prototype.equals = function (other) {
@@ -1521,24 +1585,25 @@ Billboard.prototype.equals = function (other) {
       NearFarScalar.equals(this._scaleByDistance, other._scaleByDistance) &&
       NearFarScalar.equals(
         this._translucencyByDistance,
-        other._translucencyByDistance
+        other._translucencyByDistance,
       ) &&
       NearFarScalar.equals(
         this._pixelOffsetScaleByDistance,
-        other._pixelOffsetScaleByDistance
+        other._pixelOffsetScaleByDistance,
       ) &&
       DistanceDisplayCondition.equals(
         this._distanceDisplayCondition,
-        other._distanceDisplayCondition
+        other._distanceDisplayCondition,
       ) &&
-      this._disableDepthTestDistance === other._disableDepthTestDistance)
+      this._disableDepthTestDistance === other._disableDepthTestDistance &&
+      this._splitDirection === other._splitDirection)
   );
 };
 
 Billboard.prototype._destroy = function () {
   if (defined(this._customData)) {
     this._billboardCollection._scene.globe._surface.removeTileCustomData(
-      this._customData
+      this._customData,
     );
     this._customData = undefined;
   }

@@ -1,115 +1,144 @@
 //This file is automatically rebuilt by the Cesium build process.
-export default "uniform sampler2D randomTexture;\n\
+export default "precision highp float;\n\
+\n\
+uniform sampler2D randomTexture;\n\
 uniform sampler2D depthTexture;\n\
 uniform float intensity;\n\
 uniform float bias;\n\
 uniform float lengthCap;\n\
-uniform float stepSize;\n\
-uniform float frustumLength;\n\
+uniform int stepCount;\n\
+uniform int directionCount;\n\
 \n\
-in vec2 v_textureCoordinates;\n\
-\n\
-vec4 clipToEye(vec2 uv, float depth)\n\
+vec4 pixelToEye(vec2 screenCoordinate)\n\
 {\n\
-    vec2 xy = vec2((uv.x * 2.0 - 1.0), ((1.0 - uv.y) * 2.0 - 1.0));\n\
+    vec2 uv = screenCoordinate / czm_viewport.zw;\n\
+    float depth = czm_readDepth(depthTexture, uv);\n\
+    vec2 xy = 2.0 * uv - vec2(1.0);\n\
     vec4 posEC = czm_inverseProjection * vec4(xy, depth, 1.0);\n\
     posEC = posEC / posEC.w;\n\
+    // Avoid numerical error at far plane\n\
+    if (depth >= 1.0) {\n\
+        posEC.z = czm_currentFrustum.y;\n\
+    }\n\
     return posEC;\n\
 }\n\
 \n\
-//Reconstruct Normal Without Edge Removation\n\
-vec3 getNormalXEdge(vec3 posInCamera, float depthU, float depthD, float depthL, float depthR, vec2 pixelSize)\n\
+// Reconstruct surface normal in eye coordinates, avoiding edges\n\
+vec3 getNormalXEdge(vec3 positionEC)\n\
 {\n\
-    vec4 posInCameraUp = clipToEye(v_textureCoordinates - vec2(0.0, pixelSize.y), depthU);\n\
-    vec4 posInCameraDown = clipToEye(v_textureCoordinates + vec2(0.0, pixelSize.y), depthD);\n\
-    vec4 posInCameraLeft = clipToEye(v_textureCoordinates - vec2(pixelSize.x, 0.0), depthL);\n\
-    vec4 posInCameraRight = clipToEye(v_textureCoordinates + vec2(pixelSize.x, 0.0), depthR);\n\
+    // Find the 3D surface positions at adjacent screen pixels\n\
+    vec2 centerCoord = gl_FragCoord.xy;\n\
+    vec3 positionLeft = pixelToEye(centerCoord + vec2(-1.0, 0.0)).xyz;\n\
+    vec3 positionRight = pixelToEye(centerCoord + vec2(1.0, 0.0)).xyz;\n\
+    vec3 positionUp = pixelToEye(centerCoord + vec2(0.0, 1.0)).xyz;\n\
+    vec3 positionDown = pixelToEye(centerCoord + vec2(0.0, -1.0)).xyz;\n\
 \n\
-    vec3 up = posInCamera.xyz - posInCameraUp.xyz;\n\
-    vec3 down = posInCameraDown.xyz - posInCamera.xyz;\n\
-    vec3 left = posInCamera.xyz - posInCameraLeft.xyz;\n\
-    vec3 right = posInCameraRight.xyz - posInCamera.xyz;\n\
+    // Compute potential tangent vectors\n\
+    vec3 dx0 = positionEC - positionLeft;\n\
+    vec3 dx1 = positionRight - positionEC;\n\
+    vec3 dy0 = positionEC - positionDown;\n\
+    vec3 dy1 = positionUp - positionEC;\n\
 \n\
-    vec3 DX = length(left) < length(right) ? left : right;\n\
-    vec3 DY = length(up) < length(down) ? up : down;\n\
+    // The shorter tangent is more likely to be on the same surface\n\
+    vec3 dx = length(dx0) < length(dx1) ? dx0 : dx1;\n\
+    vec3 dy = length(dy0) < length(dy1) ? dy0 : dy1;\n\
 \n\
-    return normalize(cross(DY, DX));\n\
+    return normalize(cross(dx, dy));\n\
+}\n\
+\n\
+const float sqrtTwoPi = sqrt(czm_twoPi);\n\
+\n\
+float gaussian(float x, float standardDeviation) {\n\
+    float argument = x / standardDeviation;\n\
+    return exp(-0.5 * argument * argument) / (sqrtTwoPi * standardDeviation);\n\
 }\n\
 \n\
 void main(void)\n\
 {\n\
-    float depth = czm_readDepth(depthTexture, v_textureCoordinates);\n\
-    vec4 posInCamera = clipToEye(v_textureCoordinates, depth);\n\
+    vec4 positionEC = pixelToEye(gl_FragCoord.xy);\n\
 \n\
-    if (posInCamera.z > frustumLength)\n\
+    // Exit if we are too close to the back of the frustum, where the depth value is invalid.\n\
+    float maxValidDepth = czm_currentFrustum.y - lengthCap;\n\
+    if (-positionEC.z > maxValidDepth)\n\
     {\n\
         out_FragColor = vec4(1.0);\n\
         return;\n\
     }\n\
 \n\
-    vec2 pixelSize = czm_pixelRatio / czm_viewport.zw;\n\
-    float depthU = czm_readDepth(depthTexture, v_textureCoordinates - vec2(0.0, pixelSize.y));\n\
-    float depthD = czm_readDepth(depthTexture, v_textureCoordinates + vec2(0.0, pixelSize.y));\n\
-    float depthL = czm_readDepth(depthTexture, v_textureCoordinates - vec2(pixelSize.x, 0.0));\n\
-    float depthR = czm_readDepth(depthTexture, v_textureCoordinates + vec2(pixelSize.x, 0.0));\n\
-    vec3 normalInCamera = getNormalXEdge(posInCamera.xyz, depthU, depthD, depthL, depthR, pixelSize);\n\
+    vec3 normalEC = getNormalXEdge(positionEC.xyz);\n\
+    float gaussianVariance = lengthCap * sqrt(-positionEC.z);\n\
+    // Choose a step length such that the marching stops just before 3 * variance.\n\
+    float stepLength = 3.0 * gaussianVariance / (float(stepCount) + 1.0);\n\
+    float metersPerPixel = czm_metersPerPixel(positionEC, 1.0);\n\
+    // Minimum step is 1 pixel to avoid double sampling\n\
+    float pixelsPerStep = max(stepLength / metersPerPixel, 1.0);\n\
+    stepLength = pixelsPerStep * metersPerPixel;\n\
+\n\
+    float angleStepScale = 1.0 / float(directionCount);\n\
+    float angleStep = angleStepScale * czm_twoPi;\n\
+    float cosStep = cos(angleStep);\n\
+    float sinStep = sin(angleStep);\n\
+    mat2 rotateStep = mat2(cosStep, sinStep, -sinStep, cosStep);\n\
+\n\
+    // Initial sampling direction (different for each pixel)\n\
+    const float randomTextureSize = 255.0;\n\
+    vec2 randomTexCoord = fract(gl_FragCoord.xy / randomTextureSize);\n\
+    float randomVal = texture(randomTexture, randomTexCoord).x;\n\
+    vec2 sampleDirection = vec2(cos(angleStep * randomVal), sin(angleStep * randomVal));\n\
 \n\
     float ao = 0.0;\n\
-    vec2 sampleDirection = vec2(1.0, 0.0);\n\
-    float gapAngle = 90.0 * czm_radiansPerDegree;\n\
-\n\
-    // RandomNoise\n\
-    float randomVal = texture(randomTexture, v_textureCoordinates / pixelSize / 255.0).x;\n\
-\n\
-    //Loop for each direction\n\
-    for (int i = 0; i < 4; i++)\n\
+    // Loop over sampling directions\n\
+#if __VERSION__ == 300\n\
+    for (int i = 0; i < directionCount; i++)\n\
     {\n\
-        float newGapAngle = gapAngle * (float(i) + randomVal);\n\
-        float cosVal = cos(newGapAngle);\n\
-        float sinVal = sin(newGapAngle);\n\
+#else\n\
+    for (int i = 0; i < 16; i++)\n\
+    {\n\
+        if (i >= directionCount) {\n\
+            break;\n\
+        }\n\
+#endif\n\
+        sampleDirection = rotateStep * sampleDirection;\n\
 \n\
-        //Rotate Sampling Direction\n\
-        vec2 rotatedSampleDirection = vec2(cosVal * sampleDirection.x - sinVal * sampleDirection.y, sinVal * sampleDirection.x + cosVal * sampleDirection.y);\n\
         float localAO = 0.0;\n\
-        float localStepSize = stepSize;\n\
+        vec2 radialStep = pixelsPerStep * sampleDirection;\n\
 \n\
-        //Loop for each step\n\
-        for (int j = 0; j < 6; j++)\n\
+#if __VERSION__ == 300\n\
+        for (int j = 0; j < stepCount; j++)\n\
         {\n\
-            vec2 newCoords = v_textureCoordinates + rotatedSampleDirection * localStepSize * pixelSize;\n\
+#else\n\
+        for (int j = 0; j < 64; j++)\n\
+        {\n\
+            if (j >= stepCount) {\n\
+                break;\n\
+            }\n\
+#endif\n\
+            // Step along sampling direction, away from output pixel\n\
+            vec2 samplePixel = floor(gl_FragCoord.xy + float(j + 1) * radialStep) + vec2(0.5);\n\
 \n\
-            //Exception Handling\n\
-            if(newCoords.x > 1.0 || newCoords.y > 1.0 || newCoords.x < 0.0 || newCoords.y < 0.0)\n\
-            {\n\
+            // Exit if we stepped off the screen\n\
+            if (clamp(samplePixel, vec2(0.0), czm_viewport.zw) != samplePixel) {\n\
                 break;\n\
             }\n\
 \n\
-            float stepDepthInfo = czm_readDepth(depthTexture, newCoords);\n\
-            vec4 stepPosInCamera = clipToEye(newCoords, stepDepthInfo);\n\
-            vec3 diffVec = stepPosInCamera.xyz - posInCamera.xyz;\n\
-            float len = length(diffVec);\n\
+            // Compute step vector from output point to sampled point\n\
+            vec4 samplePositionEC = pixelToEye(samplePixel);\n\
+            vec3 stepVector = samplePositionEC.xyz - positionEC.xyz;\n\
 \n\
-            if (len > lengthCap)\n\
-            {\n\
-                break;\n\
-            }\n\
+            // Estimate the angle from the surface normal.\n\
+            float dotVal = clamp(dot(normalEC, normalize(stepVector)), 0.0, 1.0);\n\
+            dotVal = czm_branchFreeTernary(dotVal > bias, dotVal, 0.0);\n\
+            dotVal = czm_branchFreeTernary(-samplePositionEC.z <= maxValidDepth, dotVal, 0.0);\n\
 \n\
-            float dotVal = clamp(dot(normalInCamera, normalize(diffVec)), 0.0, 1.0 );\n\
-            float weight = len / lengthCap;\n\
-            weight = 1.0 - weight * weight;\n\
-\n\
-            if (dotVal < bias)\n\
-            {\n\
-                dotVal = 0.0;\n\
-            }\n\
-\n\
-            localAO = max(localAO, dotVal * weight);\n\
-            localStepSize += stepSize;\n\
+            // Weight contribution based on the distance from the output point\n\
+            float sampleDistance = length(stepVector);\n\
+            float weight = gaussian(sampleDistance, gaussianVariance);\n\
+            localAO += weight * dotVal;\n\
         }\n\
         ao += localAO;\n\
     }\n\
 \n\
-    ao /= 4.0;\n\
+    ao *= angleStepScale * stepLength;\n\
     ao = 1.0 - clamp(ao, 0.0, 1.0);\n\
     ao = pow(ao, intensity);\n\
     out_FragColor = vec4(vec3(ao), 1.0);\n\

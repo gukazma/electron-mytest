@@ -76,7 +76,11 @@ function makeAsyncThrowFunction(debug, Type, name) {
           }).catch((e) => {
             let result = e instanceof Type || e.name === name;
             if ((0, import_engine2.defined)(message)) {
-              result = result && util.equals(e.message, message);
+              if (typeof message === "string") {
+                result = result && e.message === message;
+              } else {
+                result = result && message.test(e.message);
+              }
             }
             return {
               pass: result,
@@ -110,7 +114,7 @@ function makeThrowFunction(debug, Type, name) {
   if (debug) {
     return function(util) {
       return {
-        compare: function(actual, expected) {
+        compare: function(actual, message) {
           let result = false;
           let exception;
           if (typeof actual !== "function") {
@@ -124,18 +128,22 @@ function makeThrowFunction(debug, Type, name) {
           if (exception) {
             result = exception instanceof Type || exception.name === name;
           }
-          let message;
+          if ((0, import_engine2.defined)(message)) {
+            if (typeof message === "string") {
+              result = result && exception.message === message;
+            } else {
+              result = result && message.test(exception.message);
+            }
+          }
+          let testMessage;
           if (result) {
-            message = [
-              `Expected function not to throw ${name} , but it threw`,
-              exception.message || exception
-            ].join(" ");
+            testMessage = `Expected function not to throw ${name} , but it threw ${exception.message || exception}`;
           } else {
-            message = `Expected function to throw ${name}.`;
+            testMessage = (0, import_engine2.defined)(message) ? `Expected to throw with ${name}: ${message}, but it was thrown with ${exception}` : `Expected function to throw with ${name}.`;
           }
           return {
             pass: result,
-            message
+            message: testMessage
           };
         }
       };

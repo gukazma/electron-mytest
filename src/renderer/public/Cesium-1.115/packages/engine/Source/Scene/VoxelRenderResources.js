@@ -3,6 +3,7 @@ import combine from "../Core/combine.js";
 import defined from "../Core/defined.js";
 import ShaderBuilder from "../Renderer/ShaderBuilder.js";
 import ShaderDestination from "../Renderer/ShaderDestination.js";
+import VoxelUtils from "../Shaders/Voxels/VoxelUtils.js";
 import VoxelFS from "../Shaders/Voxels/VoxelFS.js";
 import VoxelVS from "../Shaders/Voxels/VoxelVS.js";
 import IntersectionUtils from "../Shaders/Voxels/IntersectionUtils.js";
@@ -53,7 +54,7 @@ function VoxelRenderResources(primitive) {
       shaderBuilder.addUniform(
         uniform.type,
         uniformName,
-        ShaderDestination.FRAGMENT
+        ShaderDestination.FRAGMENT,
       );
     }
   }
@@ -62,7 +63,7 @@ function VoxelRenderResources(primitive) {
   shaderBuilder.addUniform(
     "sampler2D",
     "u_megatextureTextures[METADATA_COUNT]",
-    ShaderDestination.FRAGMENT
+    ShaderDestination.FRAGMENT,
   );
 
   /**
@@ -89,6 +90,7 @@ function VoxelRenderResources(primitive) {
     customShader.fragmentShaderText,
     "#line 0",
     Octree,
+    VoxelUtils,
     IntersectionUtils,
     Megatexture,
   ]);
@@ -97,18 +99,18 @@ function VoxelRenderResources(primitive) {
     shaderBuilder.addDefine(
       "CLIPPING_PLANES",
       undefined,
-      ShaderDestination.FRAGMENT
+      ShaderDestination.FRAGMENT,
     );
     shaderBuilder.addDefine(
       "CLIPPING_PLANES_COUNT",
       clippingPlanesLength,
-      ShaderDestination.FRAGMENT
+      ShaderDestination.FRAGMENT,
     );
     if (clippingPlanes.unionClippingRegions) {
       shaderBuilder.addDefine(
         "CLIPPING_PLANES_UNION",
         undefined,
-        ShaderDestination.FRAGMENT
+        ShaderDestination.FRAGMENT,
       );
     }
     shaderBuilder.addFragmentLines([IntersectClippingPlanes]);
@@ -117,14 +119,13 @@ function VoxelRenderResources(primitive) {
     shaderBuilder.addDefine(
       "DEPTH_TEST",
       undefined,
-      ShaderDestination.FRAGMENT
+      ShaderDestination.FRAGMENT,
     );
     shaderBuilder.addFragmentLines([IntersectDepth]);
   }
 
   const shapeType = primitive._provider.shape;
   if (shapeType === "BOX") {
-    shaderBuilder.addDefine("SHAPE_BOX", undefined, ShaderDestination.FRAGMENT);
     shaderBuilder.addFragmentLines([
       convertUvToBox,
       IntersectBox,
@@ -132,17 +133,22 @@ function VoxelRenderResources(primitive) {
     ]);
   } else if (shapeType === "CYLINDER") {
     shaderBuilder.addFragmentLines([
+      convertUvToCylinder,
       IntersectLongitude,
       IntersectCylinder,
       Intersection,
-      convertUvToCylinder,
     ]);
   } else if (shapeType === "ELLIPSOID") {
+    shaderBuilder.addDefine(
+      "SHAPE_ELLIPSOID",
+      undefined,
+      ShaderDestination.FRAGMENT,
+    );
     shaderBuilder.addFragmentLines([
+      convertUvToEllipsoid,
       IntersectLongitude,
       IntersectEllipsoid,
       Intersection,
-      convertUvToEllipsoid,
     ]);
   }
 
@@ -168,7 +174,7 @@ function VoxelRenderResources(primitive) {
     shaderBuilder.addDefine(
       "CLIPPING_PLANES_INTERSECTION_INDEX",
       intersectionCount,
-      ShaderDestination.FRAGMENT
+      ShaderDestination.FRAGMENT,
     );
     if (clippingPlanesLength === 1) {
       intersectionCount += 1;
@@ -182,14 +188,14 @@ function VoxelRenderResources(primitive) {
     shaderBuilder.addDefine(
       "DEPTH_INTERSECTION_INDEX",
       intersectionCount,
-      ShaderDestination.FRAGMENT
+      ShaderDestination.FRAGMENT,
     );
     intersectionCount += 1;
   }
   shaderBuilder.addDefine(
     "INTERSECTION_COUNT",
     intersectionCount,
-    ShaderDestination.FRAGMENT
+    ShaderDestination.FRAGMENT,
   );
 
   // Additional fragment shader defines
@@ -206,24 +212,21 @@ function VoxelRenderResources(primitive) {
     shaderBuilder.addDefine(
       "LOG_DEPTH_READ_ONLY",
       undefined,
-      ShaderDestination.FRAGMENT
+      ShaderDestination.FRAGMENT,
     );
-  }
-  if (primitive._jitter) {
-    shaderBuilder.addDefine("JITTER", undefined, ShaderDestination.FRAGMENT);
   }
   if (primitive._nearestSampling) {
     shaderBuilder.addDefine(
       "NEAREST_SAMPLING",
       undefined,
-      ShaderDestination.FRAGMENT
+      ShaderDestination.FRAGMENT,
     );
   }
   const traversal = primitive._traversal;
   shaderBuilder.addDefine(
     "SAMPLE_COUNT",
     `${traversal._sampleCount}`,
-    ShaderDestination.FRAGMENT
+    ShaderDestination.FRAGMENT,
   );
 }
 

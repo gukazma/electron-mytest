@@ -74,7 +74,7 @@ function createTaskProcessorWorker(workerFunction) {
 var createTaskProcessorWorker_default = createTaskProcessorWorker;
 
 // packages/engine/index.js
-globalThis.CESIUM_VERSION = "1.115";
+globalThis.CESIUM_VERSION = "1.125";
 
 // Specs/TestWorkers/returnByteLength.js
 var returnByteLength_default = createTaskProcessorWorker_default(function(parameters) {

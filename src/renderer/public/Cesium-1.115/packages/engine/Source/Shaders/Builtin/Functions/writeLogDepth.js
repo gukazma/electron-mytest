@@ -11,7 +11,7 @@ uniform vec2 u_polygonOffset;\n\
 /**\n\
  * Writes the fragment depth to the logarithmic depth buffer.\n\
  * <p>\n\
- * Use this when the vertex shader does not call {@link czm_vertexlogDepth}, for example, when\n\
+ * Use this when the vertex shader does not call {@link czm_vertexLogDepth}, for example, when\n\
  * ray-casting geometry using a full screen quad.\n\
  * </p>\n\
  * @name czm_writeLogDepth\n\
@@ -67,7 +67,7 @@ void czm_writeLogDepth(float depth)\n\
 /**\n\
  * Writes the fragment depth to the logarithmic depth buffer.\n\
  * <p>\n\
- * Use this when the vertex shader calls {@link czm_vertexlogDepth}.\n\
+ * Use this when the vertex shader calls {@link czm_vertexLogDepth}.\n\
  * </p>\n\
  *\n\
  * @name czm_writeLogDepth\n\

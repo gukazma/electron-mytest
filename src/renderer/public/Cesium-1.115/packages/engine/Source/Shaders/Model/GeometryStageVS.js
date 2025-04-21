@@ -17,7 +17,7 @@ export default "vec4 geometryStage(inout ProcessedAttributes attributes, mat4 mo
     #endif\n\
 \n\
     // Sometimes the custom shader and/or style needs this\n\
-    #if defined(COMPUTE_POSITION_WC_CUSTOM_SHADER) || defined(COMPUTE_POSITION_WC_STYLE) || defined(COMPUTE_POSITION_WC_ATMOSPHERE)\n\
+    #if defined(COMPUTE_POSITION_WC_CUSTOM_SHADER) || defined(COMPUTE_POSITION_WC_STYLE) || defined(COMPUTE_POSITION_WC_ATMOSPHERE) || defined(ENABLE_CLIPPING_POLYGONS)\n\
     // Note that this is a 32-bit position which may result in jitter on small\n\
     // scales.\n\
     v_positionWC = (czm_model * vec4(positionMC, 1.0)).xyz;\n\

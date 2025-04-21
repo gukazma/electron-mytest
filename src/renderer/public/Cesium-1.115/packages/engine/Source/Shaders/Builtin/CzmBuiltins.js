@@ -17,6 +17,7 @@ import czm_passCesium3DTileClassificationIgnoreShow from './Constants/passCesium
 import czm_passClassification from './Constants/passClassification.js'
 import czm_passCompute from './Constants/passCompute.js'
 import czm_passEnvironment from './Constants/passEnvironment.js'
+import czm_passGaussianSplats from './Constants/passGaussianSplats.js'
 import czm_passGlobe from './Constants/passGlobe.js'
 import czm_passOpaque from './Constants/passOpaque.js'
 import czm_passOverlay from './Constants/passOverlay.js'
@@ -42,16 +43,9 @@ import czm_material from './Structs/material.js'
 import czm_materialInput from './Structs/materialInput.js'
 import czm_modelMaterial from './Structs/modelMaterial.js'
 import czm_modelVertexOutput from './Structs/modelVertexOutput.js'
-import czm_pbrParameters from './Structs/pbrParameters.js'
 import czm_ray from './Structs/ray.js'
 import czm_raySegment from './Structs/raySegment.js'
 import czm_shadowParameters from './Structs/shadowParameters.js'
-import czm_HSBToRGB from './Functions/HSBToRGB.js'
-import czm_HSLToRGB from './Functions/HSLToRGB.js'
-import czm_RGBToHSB from './Functions/RGBToHSB.js'
-import czm_RGBToHSL from './Functions/RGBToHSL.js'
-import czm_RGBToXYZ from './Functions/RGBToXYZ.js'
-import czm_XYZToRGB from './Functions/XYZToRGB.js'
 import czm_acesTonemapping from './Functions/acesTonemapping.js'
 import czm_alphaWeight from './Functions/alphaWeight.js'
 import czm_antialias from './Functions/antialias.js'
@@ -64,6 +58,7 @@ import czm_cascadeColor from './Functions/cascadeColor.js'
 import czm_cascadeDistance from './Functions/cascadeDistance.js'
 import czm_cascadeMatrix from './Functions/cascadeMatrix.js'
 import czm_cascadeWeights from './Functions/cascadeWeights.js'
+import czm_clipPolygons from './Functions/clipPolygons.js'
 import czm_columbusViewMorph from './Functions/columbusViewMorph.js'
 import czm_computeAtmosphereColor from './Functions/computeAtmosphereColor.js'
 import czm_computeGroundAtmosphereScattering from './Functions/computeGroundAtmosphereScattering.js'
@@ -71,11 +66,10 @@ import czm_computePosition from './Functions/computePosition.js'
 import czm_computeScattering from './Functions/computeScattering.js'
 import czm_cosineAndSine from './Functions/cosineAndSine.js'
 import czm_decompressTextureCoordinates from './Functions/decompressTextureCoordinates.js'
-import czm_defaultPbrMaterial from './Functions/defaultPbrMaterial.js'
 import czm_depthClamp from './Functions/depthClamp.js'
 import czm_eastNorthUpToEyeCoordinates from './Functions/eastNorthUpToEyeCoordinates.js'
 import czm_ellipsoidContainsPoint from './Functions/ellipsoidContainsPoint.js'
-import czm_ellipsoidWgs84TextureCoordinates from './Functions/ellipsoidWgs84TextureCoordinates.js'
+import czm_ellipsoidTextureCoordinates from './Functions/ellipsoidTextureCoordinates.js'
 import czm_equalsEpsilon from './Functions/equalsEpsilon.js'
 import czm_eyeOffset from './Functions/eyeOffset.js'
 import czm_eyeToWindowCoordinates from './Functions/eyeToWindowCoordinates.js'
@@ -88,14 +82,17 @@ import czm_getDynamicAtmosphereLightDirection from './Functions/getDynamicAtmosp
 import czm_getLambertDiffuse from './Functions/getLambertDiffuse.js'
 import czm_getSpecular from './Functions/getSpecular.js'
 import czm_getWaterNoise from './Functions/getWaterNoise.js'
+import czm_HSBToRGB from './Functions/HSBToRGB.js'
+import czm_HSLToRGB from './Functions/HSLToRGB.js'
 import czm_hue from './Functions/hue.js'
 import czm_inverseGamma from './Functions/inverseGamma.js'
 import czm_isEmpty from './Functions/isEmpty.js'
 import czm_isFull from './Functions/isFull.js'
 import czm_latitudeToWebMercatorFraction from './Functions/latitudeToWebMercatorFraction.js'
-import czm_lineDistance from './Functions/lineDistance.js'
 import czm_linearToSrgb from './Functions/linearToSrgb.js'
+import czm_lineDistance from './Functions/lineDistance.js'
 import czm_luminance from './Functions/luminance.js'
+import czm_maximumComponent from './Functions/maximumComponent.js'
 import czm_metersPerPixel from './Functions/metersPerPixel.js'
 import czm_modelToWindowCoordinates from './Functions/modelToWindowCoordinates.js'
 import czm_multiplyWithColorBalance from './Functions/multiplyWithColorBalance.js'
@@ -103,8 +100,7 @@ import czm_nearFarScalar from './Functions/nearFarScalar.js'
 import czm_octDecode from './Functions/octDecode.js'
 import czm_packDepth from './Functions/packDepth.js'
 import czm_pbrLighting from './Functions/pbrLighting.js'
-import czm_pbrMetallicRoughnessMaterial from './Functions/pbrMetallicRoughnessMaterial.js'
-import czm_pbrSpecularGlossinessMaterial from './Functions/pbrSpecularGlossinessMaterial.js'
+import czm_pbrNeutralTonemapping from './Functions/pbrNeutralTonemapping.js'
 import czm_phong from './Functions/phong.js'
 import czm_planeDistance from './Functions/planeDistance.js'
 import czm_pointAlongRay from './Functions/pointAlongRay.js'
@@ -113,8 +109,10 @@ import czm_raySphereIntersectionInterval from './Functions/raySphereIntersection
 import czm_readDepth from './Functions/readDepth.js'
 import czm_readNonPerspective from './Functions/readNonPerspective.js'
 import czm_reverseLogDepth from './Functions/reverseLogDepth.js'
+import czm_RGBToHSB from './Functions/RGBToHSB.js'
+import czm_RGBToHSL from './Functions/RGBToHSL.js'
+import czm_RGBToXYZ from './Functions/RGBToXYZ.js'
 import czm_round from './Functions/round.js'
-import czm_sampleOctahedralProjection from './Functions/sampleOctahedralProjection.js'
 import czm_saturation from './Functions/saturation.js'
 import czm_shadowDepthCompare from './Functions/shadowDepthCompare.js'
 import czm_shadowVisibility from './Functions/shadowVisibility.js'
@@ -127,6 +125,7 @@ import czm_transformPlane from './Functions/transformPlane.js'
 import czm_translateRelativeToEye from './Functions/translateRelativeToEye.js'
 import czm_translucentPhong from './Functions/translucentPhong.js'
 import czm_transpose from './Functions/transpose.js'
+import czm_unpackClippingExtents from './Functions/unpackClippingExtents.js'
 import czm_unpackDepth from './Functions/unpackDepth.js'
 import czm_unpackFloat from './Functions/unpackFloat.js'
 import czm_unpackUint from './Functions/unpackUint.js'
@@ -136,6 +135,7 @@ import czm_windowToEyeCoordinates from './Functions/windowToEyeCoordinates.js'
 import czm_writeDepthClamp from './Functions/writeDepthClamp.js'
 import czm_writeLogDepth from './Functions/writeLogDepth.js'
 import czm_writeNonPerspective from './Functions/writeNonPerspective.js'
+import czm_XYZToRGB from './Functions/XYZToRGB.js'
 
 export default {
     czm_degreesPerRadian : czm_degreesPerRadian,
@@ -156,6 +156,7 @@ export default {
     czm_passClassification : czm_passClassification,
     czm_passCompute : czm_passCompute,
     czm_passEnvironment : czm_passEnvironment,
+    czm_passGaussianSplats : czm_passGaussianSplats,
     czm_passGlobe : czm_passGlobe,
     czm_passOpaque : czm_passOpaque,
     czm_passOverlay : czm_passOverlay,
@@ -181,16 +182,9 @@ export default {
     czm_materialInput : czm_materialInput,
     czm_modelMaterial : czm_modelMaterial,
     czm_modelVertexOutput : czm_modelVertexOutput,
-    czm_pbrParameters : czm_pbrParameters,
     czm_ray : czm_ray,
     czm_raySegment : czm_raySegment,
     czm_shadowParameters : czm_shadowParameters,
-    czm_HSBToRGB : czm_HSBToRGB,
-    czm_HSLToRGB : czm_HSLToRGB,
-    czm_RGBToHSB : czm_RGBToHSB,
-    czm_RGBToHSL : czm_RGBToHSL,
-    czm_RGBToXYZ : czm_RGBToXYZ,
-    czm_XYZToRGB : czm_XYZToRGB,
     czm_acesTonemapping : czm_acesTonemapping,
     czm_alphaWeight : czm_alphaWeight,
     czm_antialias : czm_antialias,
@@ -203,6 +197,7 @@ export default {
     czm_cascadeDistance : czm_cascadeDistance,
     czm_cascadeMatrix : czm_cascadeMatrix,
     czm_cascadeWeights : czm_cascadeWeights,
+    czm_clipPolygons : czm_clipPolygons,
     czm_columbusViewMorph : czm_columbusViewMorph,
     czm_computeAtmosphereColor : czm_computeAtmosphereColor,
     czm_computeGroundAtmosphereScattering : czm_computeGroundAtmosphereScattering,
@@ -210,11 +205,10 @@ export default {
     czm_computeScattering : czm_computeScattering,
     czm_cosineAndSine : czm_cosineAndSine,
     czm_decompressTextureCoordinates : czm_decompressTextureCoordinates,
-    czm_defaultPbrMaterial : czm_defaultPbrMaterial,
     czm_depthClamp : czm_depthClamp,
     czm_eastNorthUpToEyeCoordinates : czm_eastNorthUpToEyeCoordinates,
     czm_ellipsoidContainsPoint : czm_ellipsoidContainsPoint,
-    czm_ellipsoidWgs84TextureCoordinates : czm_ellipsoidWgs84TextureCoordinates,
+    czm_ellipsoidTextureCoordinates : czm_ellipsoidTextureCoordinates,
     czm_equalsEpsilon : czm_equalsEpsilon,
     czm_eyeOffset : czm_eyeOffset,
     czm_eyeToWindowCoordinates : czm_eyeToWindowCoordinates,
@@ -227,14 +221,17 @@ export default {
     czm_getLambertDiffuse : czm_getLambertDiffuse,
     czm_getSpecular : czm_getSpecular,
     czm_getWaterNoise : czm_getWaterNoise,
+    czm_HSBToRGB : czm_HSBToRGB,
+    czm_HSLToRGB : czm_HSLToRGB,
     czm_hue : czm_hue,
     czm_inverseGamma : czm_inverseGamma,
     czm_isEmpty : czm_isEmpty,
     czm_isFull : czm_isFull,
     czm_latitudeToWebMercatorFraction : czm_latitudeToWebMercatorFraction,
-    czm_lineDistance : czm_lineDistance,
     czm_linearToSrgb : czm_linearToSrgb,
+    czm_lineDistance : czm_lineDistance,
     czm_luminance : czm_luminance,
+    czm_maximumComponent : czm_maximumComponent,
     czm_metersPerPixel : czm_metersPerPixel,
     czm_modelToWindowCoordinates : czm_modelToWindowCoordinates,
     czm_multiplyWithColorBalance : czm_multiplyWithColorBalance,
@@ -242,8 +239,7 @@ export default {
     czm_octDecode : czm_octDecode,
     czm_packDepth : czm_packDepth,
     czm_pbrLighting : czm_pbrLighting,
-    czm_pbrMetallicRoughnessMaterial : czm_pbrMetallicRoughnessMaterial,
-    czm_pbrSpecularGlossinessMaterial : czm_pbrSpecularGlossinessMaterial,
+    czm_pbrNeutralTonemapping : czm_pbrNeutralTonemapping,
     czm_phong : czm_phong,
     czm_planeDistance : czm_planeDistance,
     czm_pointAlongRay : czm_pointAlongRay,
@@ -252,8 +248,10 @@ export default {
     czm_readDepth : czm_readDepth,
     czm_readNonPerspective : czm_readNonPerspective,
     czm_reverseLogDepth : czm_reverseLogDepth,
+    czm_RGBToHSB : czm_RGBToHSB,
+    czm_RGBToHSL : czm_RGBToHSL,
+    czm_RGBToXYZ : czm_RGBToXYZ,
     czm_round : czm_round,
-    czm_sampleOctahedralProjection : czm_sampleOctahedralProjection,
     czm_saturation : czm_saturation,
     czm_shadowDepthCompare : czm_shadowDepthCompare,
     czm_shadowVisibility : czm_shadowVisibility,
@@ -266,6 +264,7 @@ export default {
     czm_translateRelativeToEye : czm_translateRelativeToEye,
     czm_translucentPhong : czm_translucentPhong,
     czm_transpose : czm_transpose,
+    czm_unpackClippingExtents : czm_unpackClippingExtents,
     czm_unpackDepth : czm_unpackDepth,
     czm_unpackFloat : czm_unpackFloat,
     czm_unpackUint : czm_unpackUint,
@@ -274,5 +273,6 @@ export default {
     czm_windowToEyeCoordinates : czm_windowToEyeCoordinates,
     czm_writeDepthClamp : czm_writeDepthClamp,
     czm_writeLogDepth : czm_writeLogDepth,
-    czm_writeNonPerspective : czm_writeNonPerspective
+    czm_writeNonPerspective : czm_writeNonPerspective,
+    czm_XYZToRGB : czm_XYZToRGB
 };

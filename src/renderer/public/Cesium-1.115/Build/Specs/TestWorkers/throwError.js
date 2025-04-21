@@ -74,7 +74,7 @@ function createTaskProcessorWorker(workerFunction) {
 var createTaskProcessorWorker_default = createTaskProcessorWorker;
 
 // packages/engine/index.js
-globalThis.CESIUM_VERSION = "1.115";
+globalThis.CESIUM_VERSION = "1.125";
 
 // Specs/TestWorkers/throwError.js
 var throwError_default = createTaskProcessorWorker_default(function(parameters) {
